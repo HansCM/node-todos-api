@@ -41,7 +41,7 @@ app.get("/todos/:id", (req,res) => {
 
 app.get("/todos-all", (req,res) => {
 	Todo.find().then((todos) => {
-		res.send(JSON.stringify(todos,undefined,2));
+		res.send(todos);
 	}, (e) => {
 		res.status(400).send(e);
 	})	
