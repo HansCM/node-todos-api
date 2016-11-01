@@ -39,10 +39,6 @@ app.get("/todos/:id", (req,res) => {
 	});
 });
 
-app.get("/todos/", (req,res) => {
-	res.status(200).send("hello worlds: ");	
-});
-
 app.listen(port, () => {
 	console.log(`Server up on port ${port}`);
 });
