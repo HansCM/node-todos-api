@@ -5,7 +5,7 @@ const{ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
-var {Users} = require('./models/user');
+var {Users} = require('./models/users');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -13,6 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post('/todos',(req, res) => {
+	
 	var todo = new Todo({
 		text: req.body.text
 	});
@@ -56,7 +57,7 @@ app.delete("/todos/:id", (req,res) => {
 	}).catch((e) => {
 		res.status(400).send(e);
 	});	
-});
+});//app.delete todos:id
 
 app.patch("/todos/:id", (req, res) => {
 	var id = req.params.id;
@@ -81,15 +82,32 @@ app.patch("/todos/:id", (req, res) => {
 	}).catch((e) => {
 		res.status(400).send();
 	})	
-});//app.patch
+});//app.patch todos:id
+
+app.post(/user/, (req,res) => {
+	var body = _.pick(req.body, ["email", "password"]);
+	
+	var user = new Users({
+		email: body.email,
+		password: body.password
+	});
+	
+	user.save().then(() => {
+		return user.generateAuthToken();
+	}).then((token) => {
+		res.header('x-auth', token).send(user);			
+	}).catch((e) => {
+		res.status(400).send(e.code);
+	});	
+});
 
 app.get("/todos-all", (req,res) => {
 	Todo.find().then((todos) => {
 		res.send(todos);
 	}, (e) => {
-		res.status(400).send(e);
+		res.sendStatus(400).send(e);
 	})	
-});
+});//app.get todos-all
 
 
 app.listen(port, () => {
